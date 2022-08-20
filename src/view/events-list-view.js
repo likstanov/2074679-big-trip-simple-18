@@ -1,10 +1,10 @@
 import { createElement } from '../render.js';
 
-const createTripEventsListTemplate = () => '<ul class="trip-events__list"></ul>';
+const createEventsListTemplate = () => '<ul class="trip-events__list"></ul>';
 
-class TripEventsListView {
+class EventsListView {
   getTemplate() {
-    return createTripEventsListTemplate();
+    return createEventsListTemplate();
   }
 
   getElement() {
@@ -19,4 +19,4 @@ class TripEventsListView {
   }
 }
 
-export { TripEventsListView };
+export { EventsListView };
