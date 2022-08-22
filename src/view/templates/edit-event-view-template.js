@@ -3,10 +3,10 @@ const getDestinationsItemsListTemplate = (destinations) => {
   destinations.forEach((destination) => {
     destinationItemsList += `<option value="${destination.name}"></option>`;
   });
-  return destinationItemsList ? destinationItemsList : 'No additional offers';
+  return destinationItemsList;
 };
 
-const getOffersItemsList = (offers, event) => {
+const getOffersItemsListTemplate = (offers, event) => {
   const offersFilteredByEventType = offers.find((offer) => offer.type === event.type);
   let offersItemsList = '';
   for(const offer of offersFilteredByEventType.offers) {
@@ -25,13 +25,13 @@ const getOffersItemsList = (offers, event) => {
   return offersItemsList ? offersItemsList : '';
 };
 
-const isEventTypeChecked = (event) => setTimeout(() => {
+const changeEventTypeInputToChecked = (event) => setTimeout(() => {
   document.querySelector(`[value=${event.type}]`).checked = true;
 });
 
 const createEditEventTemplate = (event, destinations, offers) => {
   const destination = destinations.find((city) => city.id === event.destination);
-  isEventTypeChecked(event);
+  changeEventTypeInputToChecked(event);
   return (`
   <li class="trip-events__item">
                 <form class="event event--edit" action="#" method="post">
@@ -117,7 +117,7 @@ const createEditEventTemplate = (event, destinations, offers) => {
                     <section class="event__section  event__section--offers">
                       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
                       <div class="event__available-offers">
-                      ${getOffersItemsList(offers, event)}
+                      ${getOffersItemsListTemplate(offers, event)}
                       </div>
                     </section>
                     <section class="event__section  event__section--destination">

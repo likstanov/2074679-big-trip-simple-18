@@ -7,8 +7,8 @@ const filtersContainerELement = document.querySelector('.trip-controls__filters'
 const eventsContainerElement = document.querySelector('.trip-events');
 
 const eventsModel = new EventsModel();
-const pointsPresenter = new EventsPresenter();
+const eventsPresenter = new EventsPresenter();
 
 render(new FilterMenuView(), filtersContainerELement);
 
-pointsPresenter.init(eventsContainerElement, eventsModel);
+eventsPresenter.init(eventsContainerElement, eventsModel);
