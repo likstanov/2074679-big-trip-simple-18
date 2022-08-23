@@ -23,17 +23,51 @@ class EventsPresenter {
 
     render(this.#eventsListComponent, this.#eventsContainerElement);
 
+
     for(const event of this.#events) {
-      this.#renderEvent(event, this.#eventsListComponent.element);
+      this.#renderEvent(event);
     }
   };
 
-  #renderEvent(event, placeToRender) {
+  #renderEvent(event) {
     const eventOffersFilteredByType = this.#offers.find((offer) => offer.type === event.type);
     const eventOffersFilteredById = eventOffersFilteredByType.offers.filter((item) => event.offers.some((offerId) => offerId === item.id));
     const eventDestination = this.#destinations.find((city) => city.id === event.destination);
 
-    render(new EventView(event, eventDestination, eventOffersFilteredById), placeToRender);
+    const eventComponent = new EventView(event, eventDestination, eventOffersFilteredById);
+    const editEventComponent = new EditEventView(event, this.#destinations, this.#offers);
+
+    const replaceEventToEditElementForm = () => {
+      this.#eventsListComponent.element.replaceChild(editEventComponent.element, eventComponent.element);
+    };
+
+    const replaceEditElementFormToEvent = () => {
+      this.#eventsListComponent.element.replaceChild(eventComponent.element, editEventComponent.element);
+      document.removeEventListener('keydown', escKeyDownHandler);
+    };
+
+    eventComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      replaceEventToEditElementForm();
+      document.addEventListener('keydown', escKeyDownHandler);
+    });
+
+    function escKeyDownHandler (evt) {
+      if(evt.key === 'Escape' || evt.key === 'Esc') {
+        evt.preventDefault();
+        replaceEditElementFormToEvent();
+      }
+    }
+
+    editEventComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      replaceEditElementFormToEvent();
+    });
+
+    editEventComponent.element.querySelector('.event__save-btn').addEventListener('click', (evt) => {
+      evt.preventDefault();
+      replaceEditElementFormToEvent();
+    });
+
+    render(eventComponent, this.#eventsListComponent.element);
   }
 }
 
