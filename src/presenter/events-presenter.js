@@ -5,29 +5,70 @@ import { EditEventView } from '../view/edit-event-view.js';
 import { render } from '../render.js';
 
 class EventsPresenter {
-  eventsListComponent = new EventsListView();
+  #eventsListComponent = new EventsListView();
+  #eventsContainerElement = null;
+  #eventsModel = null;
+  #events = null;
+  #destinations = null;
+  #offers = null;
 
   init = (eventsContainerElement, eventsModel) => {
-    this.eventsContainerElement = eventsContainerElement;
-    this.eventsModel = eventsModel;
-    this.events = this.eventsModel.getEvents();
-    this.destinations = this.eventsModel.getDestinations();
-    this.offers = this.eventsModel.getOffers();
+    this.#eventsContainerElement = eventsContainerElement;
+    this.#eventsModel = eventsModel;
+    this.#events = this.#eventsModel.events;
+    this.#destinations = this.#eventsModel.destinations;
+    this.#offers = this.#eventsModel.offers;
 
-    render(new SortMenuView(), this.eventsContainerElement);
-    render(this.eventsListComponent, this.eventsContainerElement);
-    render(new EditEventView(this.events[0], this.destinations, this.offers), this.eventsListComponent.getElement());
+    render(new SortMenuView(), this.#eventsContainerElement);
 
-    this.events.forEach((event) => {
-      const offerFilteredByType = this.offers.find((offer) => offer.type === event.type);
-      const offerFilteredById = offerFilteredByType.offers.filter((item) => event.offers.some((offerId) => offerId === item.id));
-      render(new EventView(
-        event,
-        this.destinations.find((city) => city.id === event.destination),
-        offerFilteredById,
-      ), this.eventsListComponent.getElement());
-    });
+    render(this.#eventsListComponent, this.#eventsContainerElement);
+
+
+    for(const event of this.#events) {
+      this.#renderEvent(event);
+    }
   };
+
+  #renderEvent(event) {
+    const eventOffersFilteredByType = this.#offers.find((offer) => offer.type === event.type);
+    const eventOffersFilteredById = eventOffersFilteredByType.offers.filter((item) => event.offers.some((offerId) => offerId === item.id));
+    const eventDestination = this.#destinations.find((city) => city.id === event.destination);
+
+    const eventComponent = new EventView(event, eventDestination, eventOffersFilteredById);
+    const editEventComponent = new EditEventView(event, this.#destinations, this.#offers);
+
+    const replaceEventToEditElementForm = () => {
+      this.#eventsListComponent.element.replaceChild(editEventComponent.element, eventComponent.element);
+    };
+
+    const replaceEditElementFormToEvent = () => {
+      this.#eventsListComponent.element.replaceChild(eventComponent.element, editEventComponent.element);
+      document.removeEventListener('keydown', escKeyDownHandler);
+    };
+
+    eventComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      replaceEventToEditElementForm();
+      document.addEventListener('keydown', escKeyDownHandler);
+    });
+
+    function escKeyDownHandler (evt) {
+      if(evt.key === 'Escape' || evt.key === 'Esc') {
+        evt.preventDefault();
+        replaceEditElementFormToEvent();
+      }
+    }
+
+    editEventComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      replaceEditElementFormToEvent();
+    });
+
+    editEventComponent.element.querySelector('.event__save-btn').addEventListener('click', (evt) => {
+      evt.preventDefault();
+      replaceEditElementFormToEvent();
+    });
+
+    render(eventComponent, this.#eventsListComponent.element);
+  }
 }
 
 export { EventsPresenter };

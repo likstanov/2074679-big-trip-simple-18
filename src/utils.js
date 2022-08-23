@@ -15,7 +15,6 @@ const getSeveralUniqueRandomElementsFromArray = (arr, quantity) => {
   return [...result];
 };
 
-const getShortEventDay = (date) => dayjs(date).format('DD MMM');
-const getShortEventTime = (date) => dayjs(date).format('HH:MM');
+const getReadableDateTime = (date, format) => dayjs(date).format(format);
 
-export { getRandomIntegerFromRange, getRandomElementFromArray, getSeveralUniqueRandomElementsFromArray, getShortEventDay, getShortEventTime };
+export { getRandomIntegerFromRange, getRandomElementFromArray, getSeveralUniqueRandomElementsFromArray, getReadableDateTime };

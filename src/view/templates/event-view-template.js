@@ -1,4 +1,4 @@
-import { getShortEventDay, getShortEventTime } from '../../utils.js';
+import { getReadableDateTime } from '../../utils.js';
 
 const getOffersItemsListTemplate = (offers) => {
   let listItemsList = '';
@@ -16,16 +16,16 @@ const getOffersItemsListTemplate = (offers) => {
 
 const createEventTemplate = (event, destination, offers) => (`<li class="trip-events__item">
   <div class="event">
-    <time class="event__date" datetime="2019-03-18">${getShortEventDay(event.dateFrom)}</time>
+    <time class="event__date" datetime="2019-03-18">${getReadableDateTime(event.dateFrom, 'DD MMM')}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${event.type}.png" alt="Event type icon">
     </div>
     <h3 class="event__title">${event.type} ${destination.name}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="2019-03-18T10:30">${getShortEventTime(event.dateFrom)}</time>
+        <time class="event__start-time" datetime="2019-03-18T10:30">${getReadableDateTime(event.dateFrom, 'HH:MM')}</time>
         —
-        <time class="event__end-time" datetime="2019-03-18T11:00">${getShortEventTime(event.dateTo)}</time>
+        <time class="event__end-time" datetime="2019-03-18T11:00">${getReadableDateTime(event.dateTo, 'HH:MM')}</time>
       </p>
     </div>
     <p class="event__price">
