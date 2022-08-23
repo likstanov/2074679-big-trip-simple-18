@@ -9,15 +9,6 @@ const getDestinationsItemsListTemplate = (destinations) => {
 const getOffersItemsListTemplate = (offers, event) => {
   const offersFilteredByEventType = offers.find((offer) => offer.type === event.type);
 
-  if(offersFilteredByEventType.offers.length) {
-    offersFilteredByEventType.offers.reduce((_acc, offer, index, arr) => {
-      if(event.offers.includes(offer.id)) {
-        arr.unshift(offer);
-        arr.splice(index);
-      }
-    });
-  }
-
   let offersItemsList = '';
 
   for(const offer of offersFilteredByEventType.offers) {
@@ -36,10 +27,6 @@ const getOffersItemsListTemplate = (offers, event) => {
   return offersItemsList ? offersItemsList : '';
 };
 
-const changeEventTypeInputToChecked = (event) => setTimeout(() => {
-  document.querySelector(`[value=${event.type}]`).checked = true;
-});
-
 const getEventTypesListTemplate = (offers, event) => {
   let eventTypeList = '';
   offers.forEach((offer) => {
@@ -56,7 +43,6 @@ const getEventTypesListTemplate = (offers, event) => {
 
 const createEditEventTemplate = (event, destinations, offers) => {
   const destination = destinations.find((city) => city.id === event.destination);
-  changeEventTypeInputToChecked(event);
   return (`
   <li class="trip-events__item">
                 <form class="event event--edit" action="#" method="post">
