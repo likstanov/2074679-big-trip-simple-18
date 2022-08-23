@@ -2,6 +2,7 @@ import { EventsListView } from '../view/events-list-view.js';
 import { SortMenuView } from '../view/sort-menu-view.js';
 import { EventView } from '../view/event-view.js';
 import { EditEventView } from '../view/edit-event-view.js';
+import { EmptyEventsListView } from '../view/empty-events-list-view.js';
 import { render } from '../render.js';
 
 class EventsPresenter {
@@ -19,14 +20,18 @@ class EventsPresenter {
     this.#destinations = this.#eventsModel.destinations;
     this.#offers = this.#eventsModel.offers;
 
-    render(new SortMenuView(), this.#eventsContainerElement);
+    if(this.#events.length) {
+      render(new SortMenuView(), this.#eventsContainerElement);
+      render(this.#eventsListComponent, this.#eventsContainerElement);
 
-    render(this.#eventsListComponent, this.#eventsContainerElement);
+      for(const event of this.#events) {
+        this.#renderEvent(event);
+      }
 
-
-    for(const event of this.#events) {
-      this.#renderEvent(event);
+    } else {
+      render(new EmptyEventsListView(), this.#eventsContainerElement);
     }
+
   };
 
   #renderEvent(event) {
