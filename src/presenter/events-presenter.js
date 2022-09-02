@@ -3,36 +3,52 @@ import { SortMenuView } from '../view/sort-menu-view.js';
 import { EventView } from '../view/event-view.js';
 import { EditEventView } from '../view/edit-event-view.js';
 import { EmptyEventsListView } from '../view/empty-events-list-view.js';
-import { render } from '../render.js';
+import { render, replace } from '../framework/render.js';
+import { isEscapeKeydown } from '../utils.js';
 
 class EventsPresenter {
   #eventsListComponent = new EventsListView();
-  #eventsContainerElement = null;
+  #eventsListContainerElement = null;
   #eventsModel = null;
   #events = null;
   #destinations = null;
   #offers = null;
 
-  init = (eventsContainerElement, eventsModel) => {
-    this.#eventsContainerElement = eventsContainerElement;
+  constructor(eventsContainerElement, eventsModel){
+    this.#eventsListContainerElement = eventsContainerElement;
     this.#eventsModel = eventsModel;
     this.#events = this.#eventsModel.events;
     this.#destinations = this.#eventsModel.destinations;
     this.#offers = this.#eventsModel.offers;
+  }
+
+  init = () => {
 
     if(this.#events.length) {
-      render(new SortMenuView(), this.#eventsContainerElement);
-      render(this.#eventsListComponent, this.#eventsContainerElement);
+      this.#renderSortMenu();
+      this.#renderEventList();
 
       for(const event of this.#events) {
         this.#renderEvent(event);
       }
 
     } else {
-      render(new EmptyEventsListView(), this.#eventsContainerElement);
+      this.#renderEmptyEventsList();
     }
 
   };
+
+  #renderEventList(){
+    render(this.#eventsListComponent, this.#eventsListContainerElement);
+  }
+
+  #renderSortMenu(){
+    render(new SortMenuView(), this.#eventsListContainerElement);
+  }
+
+  #renderEmptyEventsList(){
+    render(new EmptyEventsListView(), this.#eventsListContainerElement);
+  }
 
   #renderEvent(event) {
     const eventOffersFilteredByType = this.#offers.find((offer) => offer.type === event.type);
@@ -43,34 +59,27 @@ class EventsPresenter {
     const editEventComponent = new EditEventView(event, this.#destinations, this.#offers);
 
     const replaceEventToEditElementForm = () => {
-      this.#eventsListComponent.element.replaceChild(editEventComponent.element, eventComponent.element);
+      replace(editEventComponent, eventComponent);
+      document.addEventListener('keydown', escKeyDownHandler);
     };
 
     const replaceEditElementFormToEvent = () => {
-      this.#eventsListComponent.element.replaceChild(eventComponent.element, editEventComponent.element);
+      replace(eventComponent, editEventComponent);
       document.removeEventListener('keydown', escKeyDownHandler);
     };
 
-    eventComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
-      replaceEventToEditElementForm();
-      document.addEventListener('keydown', escKeyDownHandler);
-    });
+    eventComponent.setOpenEditModalClickHandler(replaceEventToEditElementForm);
+
+    editEventComponent.setCloseEditModalClickHandler(replaceEditElementFormToEvent);
 
     function escKeyDownHandler (evt) {
-      if(evt.key === 'Escape' || evt.key === 'Esc') {
+      if(isEscapeKeydown(evt)) {
         evt.preventDefault();
         replaceEditElementFormToEvent();
       }
     }
 
-    editEventComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
-      replaceEditElementFormToEvent();
-    });
-
-    editEventComponent.element.querySelector('.event__save-btn').addEventListener('click', (evt) => {
-      evt.preventDefault();
-      replaceEditElementFormToEvent();
-    });
+    editEventComponent.setSaveEditModalClickHandler(replaceEditElementFormToEvent);
 
     render(eventComponent, this.#eventsListComponent.element);
   }
