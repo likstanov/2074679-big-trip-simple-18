@@ -1,4 +1,4 @@
-import { getRandomElementFromArray, getRandomIntegerFromRange } from '../utils.js';
+import { getRandomElementFromArray, getRandomIntegerFromRange } from './utils.js';
 import { EVENT_TYPES, CITIES, POINTS_AMOUNT } from './const-data.js';
 import { getRandomOffersByTypeId } from './offers-mock.js';
 import dayjs from 'dayjs';
