@@ -33,8 +33,8 @@ const getEventTypesListTemplate = (offers, event) => {
     const isTypeChecked = (offer.type === event.type) ? 'checked' : '';
     eventTypeList += `
     <div class="event__type-item">
-    <input id="event-type-${offer.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer.type}" ${isTypeChecked}>
-    <label class="event__type-label  event__type-label--${offer.type}" for="event-type-taxi-1">${offer.type[0].toUpperCase() + offer.type.slice(1)}</label>
+    <input id="event-type-${offer.type}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer.type}" ${isTypeChecked}>
+    <label class="event__type-label  event__type-label--${offer.type}" for="event-type-${offer.type}">${offer.type[0].toUpperCase() + offer.type.slice(1)}</label>
     </div>
     `;
   });

@@ -1,4 +1,4 @@
-import { getReadableDateTime } from '../../utils.js';
+import { getReadableDateTime } from '../../utils/common.js';
 
 const getOffersItemsListTemplate = (offers) => {
   let listItemsList = '';

@@ -1,7 +1,8 @@
-import { getRandomElementFromArray, getRandomIntegerFromRange } from './utils.js';
+import { getRandomElementFromArray, getRandomIntegerFromRange } from '../utils/mock-utils.js';
 import { EVENT_TYPES, CITIES, POINTS_AMOUNT } from './const-data.js';
 import { getRandomOffersByTypeId } from './offers-mock.js';
 import dayjs from 'dayjs';
+import { nanoid } from 'nanoid';
 
 const generateDate = (date) => {
   const gap = getRandomIntegerFromRange(1,4);
@@ -18,7 +19,7 @@ const getEvents = (amount = POINTS_AMOUNT) => {
       dateFrom,
       dateTo: generateDate(dateFrom),
       destination: getRandomIntegerFromRange(1, CITIES.length),
-      id: i,
+      id: nanoid(),
       offers: getRandomOffersByTypeId(getRandomPointType),
       type: getRandomPointType
     });
