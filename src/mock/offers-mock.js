@@ -1,4 +1,4 @@
-import { getSeveralUniqueRandomElementsFromArray, getRandomIntegerFromRange } from './utils.js';
+import { getSeveralUniqueRandomElementsFromArray, getRandomIntegerFromRange } from '../utils/mock-utils.js';
 import { OFFERS } from './const-data.js';
 
 const getRandomOffersByTypeId = (type) => {
